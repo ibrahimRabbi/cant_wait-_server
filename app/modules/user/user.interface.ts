@@ -15,8 +15,9 @@ export type Tuser = {
   occupation?: string;
   education?: string;
   marital_status: 'single' | 'married' | 'divorced' | 'widowed';
-  interest?: string;
-  role : 'user' | 'admin' | 'vip' | 'premium'
+  hobby?: string;
+  role : 'admin' | 'user';
+  subscriptionPlan: 'trail' | 'vip' | 'standard' | 'null';
   isRegister: boolean;
   isDeleted: boolean;
   isEmailVerified?: boolean;

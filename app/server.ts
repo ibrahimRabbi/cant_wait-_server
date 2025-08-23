@@ -5,8 +5,10 @@ import { createServer } from "http"
 import { Server } from "socket.io"
 import { socketCors } from "./lib/socketCors"
 import { envData } from "./config/envData"
-import { userRouter } from "./modules/user/user.route"
 import { conversationController } from "./modules/conversation/conversation.controller"
+import { router } from "./routes"
+import { globalErrorHandler } from "./middleware/globalErrorHandler"
+import { notFound } from "./middleware/notFound"
  
 
 
@@ -18,7 +20,7 @@ const io = new Server(httpServer, socketCors);
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use('/api/v1', userRouter)
+app.use('/api/v1', router)
 
 
 
@@ -46,6 +48,10 @@ async function main() {
 }
 
 main()
+
+
+app.use(globalErrorHandler)
+app.use(notFound)
 
 
 

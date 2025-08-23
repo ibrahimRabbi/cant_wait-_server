@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { Tuser } from "./user.interface";
+import { hobby } from "../../lib/hobbyArray";
 
 
 
@@ -23,9 +24,12 @@ const userSchema = new Schema<Tuser>({
         type: String,
         required: [true, 'Password is required'],
         minlength: [8, 'Password must be at least 8 characters long'],
+        match: [
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/,
+            'Password must include uppercase, lowercase, number, and special character'
+        ],
         select: false
     },
-
 
     profile: {
         type: String,
@@ -49,7 +53,7 @@ const userSchema = new Schema<Tuser>({
         required: [true, 'Gender is required'],
         enum: {
             values: ['male', 'female'],
-            message: 'Gender must be either male, female, other, or prefer_not_to_say'
+            message: 'Gender must be either male, or female'
         }
     },
 
@@ -104,28 +108,33 @@ const userSchema = new Schema<Tuser>({
         type: String,
         required: [true, 'Marital status is required'],
         enum: {
-            values: ['single', 'married', 'divorced', 'widowed'],
+            values: ['single', 'married', 'separated', 'divorced', 'widowed'],
             message: 'Invalid marital status'
         }
     },
-    interest: {
+    hobby: {
         type: String,
-        trim: true,
-        maxlength: [500, 'Interest cannot exceed 500 characters']
+        required: [true, 'hobby is required'],
+        enum: {
+            values: hobby,
+            message: 'Invalid hobby'
+        }
     },
-    role: { type: String, required: [true, 'user role is required'], enum: { values: ['user', 'admin', 'vip', 'premium'], message: "invalid user role" } },
+    role: { type: String, required: [true, 'user role is required'], enum: { values: ['admin', 'user'], message: "invalid user role" } },
+    subscriptionPlan: {
+        type: String,
+        required: [true, 'subscription plan is required'],
+        enum: {
+            values: [ 'null', 'trail', 'vip', 'standard'],
+            message: "invalid subscription plan"
+        }
+    },
     isRegister: {
         type: Boolean,
         default: false
     },
 
     isDeleted: {
-        type: Boolean,
-        default: false
-    },
-
-
-    isEmailVerified: {
         type: Boolean,
         default: false
     },

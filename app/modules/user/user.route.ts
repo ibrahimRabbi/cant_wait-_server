@@ -1,7 +1,10 @@
 import { Router } from "express";
-import { createUserController } from "./user.controller";
-
+import { createAdminUserController, createFreeTrailUserController,} from "./user.controller";
+ 
 
 export const userRouter = Router()
 
-userRouter.post('/user/create', createUserController)
+userRouter.post('/create-user', createFreeTrailUserController)
+userRouter.post('/create-admin', createAdminUserController)
+
+ 
