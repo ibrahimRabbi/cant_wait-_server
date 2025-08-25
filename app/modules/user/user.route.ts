@@ -1,10 +1,9 @@
 import { Router } from "express";
-import { createAdminUserController, createFreeTrailUserController,} from "./user.controller";
+import { createAdminUserController, createUserController, updateUserController,} from "./user.controller";
  
 
 export const userRouter = Router()
 
-userRouter.post('/create-user', createFreeTrailUserController)
+userRouter.post('/create-user', createUserController)
 userRouter.post('/create-admin', createAdminUserController)
-
- 
+userRouter.patch('/update-user/:id', updateUserController)

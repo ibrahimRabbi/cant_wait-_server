@@ -9,7 +9,7 @@ type TerrrorSource = { path: string | number, message: string }[]
 
 export const globalErrorHandler = (err: any, req: any, res: any, next: any) => {
 
-    let statusCode = err?.status || 500
+    let statusCode = err?.status || status.BAD_REQUEST
     let message = err?.message || 'something went wrong'
     let errorSource: TerrrorSource = [{
         path: '',

@@ -1,19 +1,37 @@
-import { createAdminService, createUserService} from "./user.services";
+import { createAdminService, createUserService, updateUserService } from "./user.services";
 import { catchAsync } from "../../helper/catchAsync";
 
-export const createFreeTrailUserController = catchAsync(async (req, res, next) => {
-    const creating = await createUserService(req.body);
+
+export const createUserController = catchAsync(async (req, res, next) => {
+    const createUserAndGenarateToken = await createUserService(req.body);
     res.status(200).json({
         success: true,
         status: 200,
-        response: creating
+        message:'user created successfully',
+        token: createUserAndGenarateToken
     })
 })
+
+
 export const createAdminUserController = catchAsync(async (req, res, next) => {
-    const creating = await createAdminService(req.body);
+    const createAdminandGenarateToken = await createAdminService(req.body);
     res.status(200).json({
         success: true,
         status: 200,
-        response: creating
+        message:'admin created successfully',
+        token: createAdminandGenarateToken
     })
 })
+
+
+export const updateUserController = catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const updating = await updateUserService(id, req.body);
+    res.status(200).json({
+        success: true,
+        status: 200,
+        message:'user updated successfully',
+        response: updating
+    })
+}
+)

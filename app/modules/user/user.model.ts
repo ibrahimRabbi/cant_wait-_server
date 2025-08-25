@@ -109,7 +109,7 @@ const userSchema = new Schema<Tuser>({
         required: [true, 'Marital status is required'],
         enum: {
             values: ['single', 'married', 'separated', 'divorced', 'widowed'],
-            message: 'Invalid marital status'
+            message: '{VALUE} Invalid marital status'
         }
     },
     hobby: {
@@ -120,13 +120,18 @@ const userSchema = new Schema<Tuser>({
             message: 'Invalid hobby'
         }
     },
-    role: { type: String, required: [true, 'user role is required'], enum: { values: ['admin', 'user'], message: "invalid user role" } },
+    role: {
+        type: String,
+        required: [true, 'user role is required'],
+        enum: { values: ['admin', 'user'], message: "invalid user role" },
+        select: false
+    },
     subscriptionPlan: {
         type: String,
         required: [true, 'subscription plan is required'],
         enum: {
-            values: [ 'null', 'trail', 'vip', 'standard'],
-            message: "invalid subscription plan"
+            values: ['null', 'trail', 'vip', 'standard'],
+            message: "{VALUE} is invalid subscription plan"
         }
     },
     isRegister: {
@@ -144,7 +149,7 @@ const userSchema = new Schema<Tuser>({
         default: true
     }
 
-});
+}, { timestamps: true, strict: "throw" });
 
 
 export const userModel = model('users', userSchema)
