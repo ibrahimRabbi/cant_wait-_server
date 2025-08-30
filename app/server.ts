@@ -17,13 +17,14 @@ const httpServer = createServer(app)
 const io = new Server(httpServer, socketCors);
 
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true,
+}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use('/api/v1', router)
-
-
-
 
 
 
@@ -36,7 +37,7 @@ async function main() {
     })
 
     io.on("connection", (socket) => {
-        console.log("A user connected");
+        console.log("A user connected with socket id:", socket.id);
 
        conversationController(io,socket)
 

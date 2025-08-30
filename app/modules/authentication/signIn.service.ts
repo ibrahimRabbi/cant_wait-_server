@@ -5,7 +5,8 @@ import jwt from 'jsonwebtoken'
 
 export const signInService = async (payload:TsignIn) => {
 
-    const checkExistancy = await userModel.findOne({ email: payload.email }).select('name email password role isDeleted');
+    console.log(payload)
+    const checkExistancy = await userModel.findOne({ email: payload.email }).select('name email password role gender isDeleted');
    
     if (!checkExistancy) {
         throw new Error('user is not exist')
@@ -23,6 +24,7 @@ export const signInService = async (payload:TsignIn) => {
         name: checkExistancy.name ,
         email: checkExistancy.email,
         role: checkExistancy.role,
+        gender : checkExistancy.gender
     }
     const accessToken = jwt.sign(credentials, envData.secretKey as string, { expiresIn: '7d' })
     return accessToken

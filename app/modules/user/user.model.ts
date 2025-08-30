@@ -2,7 +2,29 @@ import { model, Schema } from "mongoose";
 import { Tuser } from "./user.interface";
 import { hobby } from "../../lib/hobbyArray";
 
+const denomination = [
+    "christian: catholic",
+    "christian: protestant",
+    "christian: orthodox",
+    "muslim: sunni",
+    "muslim: shia",
+    "jewish",
+    "hindu",
+    "buddhist",
+    "aethist",
+    "other",
+]
 
+const ethnicity = [
+    "african",
+    "asian",
+    "caucasian",
+    "hispanic/latino",
+    "middle eastern",
+    "mixed race",
+    "native american",
+    "other",
+];
 
 const userSchema = new Schema<Tuser>({
     name: {
@@ -36,18 +58,15 @@ const userSchema = new Schema<Tuser>({
         default: null,
         trim: true
     },
-
     cover: {
         type: String,
         default: null,
         trim: true
     },
-
     detailsImage: {
         type: [String],
         default: []
     },
-
     gender: {
         type: String,
         required: [true, 'Gender is required'],
@@ -56,7 +75,6 @@ const userSchema = new Schema<Tuser>({
             message: 'Gender must be either male, or female'
         }
     },
-
     DOB: {
         type: Date,
         required: [true, 'Date of birth is required'],
@@ -67,11 +85,10 @@ const userSchema = new Schema<Tuser>({
             message: 'Date of birth cannot be in the future'
         }
     },
-
     age: {
         type: Number,
         min: [13, 'Age must be at least 13'],
-        max: [120, 'Age cannot exceed 120']
+        max: [70, 'Age cannot exceed 70']
     },
     country: {
         type: String,
@@ -86,19 +103,22 @@ const userSchema = new Schema<Tuser>({
         trim: true,
         maxlength: [50, 'State name cannot exceed 50 characters']
     },
-
     city: {
         type: String,
         required: [true, 'City is required'],
         trim: true,
         maxlength: [50, 'City name cannot exceed 50 characters']
     },
+    bio: {
+        type: String,
+        required: [true, 'Bio is required'],
+        maxlength: [300, 'Bio cannot exceed 300 characters']
+    },
     occupation: {
         type: String,
         trim: true,
         maxlength: [100, 'Occupation cannot exceed 100 characters']
     },
-
     education: {
         type: String,
         trim: true,
@@ -134,14 +154,34 @@ const userSchema = new Schema<Tuser>({
             message: "{VALUE} is invalid subscription plan"
         }
     },
+    denimanation: {
+        type: String,
+        required: [true, 'Denomination is required'],
+        enum: { values: denomination, message: '{VALUE} is not valid denomination' }
+    },
+    ethnicity: {
+        type: String,
+        enum: { values: ethnicity, message: '{VALUE} is not valid ethnicity' },
+        required: [true, "Ethnicity is required"],
+        lowercase: true,
+        trim: true,
+    },
+    isEngaged: { type: Boolean, default: false },
+    isEmailVerified: {
+        type: Boolean,
+        default: false,
+        select: false
+    },
     isRegister: {
         type: Boolean,
-        default: false
+        default: false,
+        select: false
     },
 
     isDeleted: {
         type: Boolean,
-        default: false
+        default: false,
+        select: false
     },
 
     isActive: {

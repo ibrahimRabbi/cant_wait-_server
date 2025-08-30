@@ -41,6 +41,7 @@ export const createAdminService = async (userData: any) => {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
+        gender: newUser.gender
     }
 
     const accessToken = jwt.sign(credentials, envData.secretKey as string, { expiresIn: '7d' })

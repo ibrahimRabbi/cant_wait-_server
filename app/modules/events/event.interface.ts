@@ -2,8 +2,9 @@ export type Tevent = {
     name: string;
     price: number;
     date: Date;
-    time: string;
-    memberType: string;
+    start_time: string;
+    end_time: string;
+    memberType: 'free trial' | 'premium' | 'standard' | 'standard and premium';
     location: string;
     description: string;
     availableSeats: number;

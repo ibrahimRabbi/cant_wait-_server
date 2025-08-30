@@ -6,9 +6,10 @@ import { envData } from "../config/envData";
 
 
 export const authentication = async (req: Request, res: Response, next: NextFunction) => {
-    console.log('authentication middleware called')
+   
     try {
         const token = req.headers.authorization?.split(' ')[1];
+       
         if (!token) {
             throw new Error('unauthorized user');
         }
@@ -23,7 +24,7 @@ export const authentication = async (req: Request, res: Response, next: NextFunc
         if (!findUser) {
             throw new Error('unauthorized user')
         }
-        req.user = decodeUser as JwtPayload
+        req.user = findUser
         next()
 
     } catch (err: any) {

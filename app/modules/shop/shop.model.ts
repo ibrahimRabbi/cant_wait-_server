@@ -28,7 +28,8 @@ const productSchema = new Schema<Tproduct>(
   {
     title: { 
       type: String, 
-      required: [true, "Product title is required"] 
+      required: [true, "Product title is required"] ,
+      maxlength:[22, 'title maxium 22 character will be applicable']
     },
     price: { 
       type: Number, 
@@ -83,4 +84,4 @@ const productSchema = new Schema<Tproduct>(
   }
 );
 
-export const ProductModel = model<Tproduct>("Product", productSchema);
+export const ProductModel = model<Tproduct>("products", productSchema);

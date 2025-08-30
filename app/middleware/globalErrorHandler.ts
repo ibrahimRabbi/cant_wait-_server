@@ -52,7 +52,7 @@ export const globalErrorHandler = (err: any, req: any, res: any, next: any) => {
 
     res.status(statusCode).json({
         success: false,
-        code: statusCode,
+        status: statusCode,
         message: message,
         errorSource: errorSource,
         stack: envData.mode === "development" ? err.stack : undefined,

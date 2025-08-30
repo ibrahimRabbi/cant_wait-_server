@@ -9,5 +9,7 @@ export const envData = {
     port : process.env.PORT,
     dbUrl : process.env.DBURL,
     mode: process.env.MODE,
-    secretKey : process.env.SECRET_KEY
+    secretKey : process.env.SECRET_KEY,
+    emailPassword : process.env.EMAIL_PASSWORD,
+    email : process.env.EMAIL
 }

@@ -17,13 +17,22 @@ const eventSchema = new Schema<Tevent>(
       type: Date,
       required: [true, "Event date is required"],
     },
-    time: {
+    start_time: {
       type: String,
       required: [true, "Event time is required"],
     },
+    end_time: {
+      type: String,
+      required: [true, "Event time is required"],
+    },
+
     memberType: {
       type: String,
-      required: [true, "Organizer/Member name is required"],
+      required: [true, "member type is required"],
+      enum: {
+        values: ["free trial", "premium", "standard", "standard and premium"],
+        message: "{VALUE} is not valid member type",
+      },
     },
     location: {
       type: String,
