@@ -1,17 +1,10 @@
 import { RequestHandler } from "express";
 import status from "http-status";
 import { OrderModel } from "./order.model";
+import { catchAsync } from "../../helper/catchAsync";
 
-export const createOrderController: RequestHandler = async (req, res, next) => {
-
-    //    if(req.user?.role !== 'admin'){
-    //     res.status(status.UNAUTHORIZED).json({
-    //         sucess:false,
-    //         status:status.UNAUTHORIZED,
-    //         message:"You are not authorized to add product"
-    //     })
-    // }
-
+export const createOrderController: RequestHandler = catchAsync(async (req, res, next) => {
+    
     req.body.senderId = req.user._id
 
     const creatingOrder = await OrderModel.create(req.body)
@@ -23,7 +16,24 @@ export const createOrderController: RequestHandler = async (req, res, next) => {
         success: true,
         status: status.OK,
         message: "order created successfully",
-        user: creatingOrder
+        data: creatingOrder
     });
     
 }
+)
+
+export const getOrderController: RequestHandler = catchAsync(async (req, res, next) => {
+    
+  const findOrders = await OrderModel.find({senderId:req.user?._id}).populate('productId').populate('reciverId')
+  if(!findOrders){
+    throw new Error('faild to get order data')
+  }
+
+    res.status(status.OK).json({
+        success: true,
+        status: status.OK,
+        message: "order created successfully",
+        data: findOrders
+    });
+    
+})

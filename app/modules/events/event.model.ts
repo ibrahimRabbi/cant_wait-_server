@@ -27,10 +27,10 @@ const eventSchema = new Schema<Tevent>(
     },
 
     memberType: {
-      type: String,
+      type: [String],
       required: [true, "member type is required"],
       enum: {
-        values: ["free trial", "premium", "standard", "standard and premium"],
+        values: ["free-trial", "premium", "standard"],
         message: "{VALUE} is not valid member type",
       },
     },

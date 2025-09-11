@@ -5,7 +5,7 @@ const OrderSchema = new Schema<Torder>(
   {
     productId: {
       type: Schema.Types.ObjectId,
-      ref: "products",  
+      ref: "products",
       required: [true, 'product id is required'],
     },
     size: {
@@ -23,16 +23,17 @@ const OrderSchema = new Schema<Torder>(
     reciverId: {
       type: Schema.Types.ObjectId,
       ref: "users",
-      required: [true,'reciver id is required'],
+      required: [true, 'reciver id is required'],
     },
     senderId: {
       type: Schema.Types.ObjectId,
       ref: "users",
       required: true,
     },
+    orderStatus : {type:String, enum:['pending','delivered'], default:'pending'},
     message: {
       type: String,
-     required: [true,'please input a short message'],
+      required: [true, 'please input a short message'],
     },
     isDeleted: {
       type: Boolean,

@@ -1,9 +1,11 @@
+import { Types } from "mongoose";
+
 export type TDenomination =
-  | "christian: catholic"
-  | "christian: protestant"
-  | "christian: orthodox"
-  | "muslim: sunni"
-  | "muslim: shia"
+  | "christian-catholic"
+  | "christian-protestant"
+  | "christian-orthodox"
+  | "muslim-sunni"
+  | "muslim-shia"
   | "jewish"
   | "hindu"
   | "buddhist"
@@ -28,7 +30,10 @@ export type Tuser = {
   password: string;
   profile?: string;
   cover?: string;
-  detailsImage: string[];
+  detailsImage?: string[];
+  document: string;
+  document1?: string;
+  document2?: string;
   gender: 'male' | 'female';
   DOB: Date;
   age: number;
@@ -37,13 +42,15 @@ export type Tuser = {
   city: string;
   bio: string;
   ethnicity : TEthnicity;
-  denimanation: TDenomination;
-  occupation?: string;
-  education?: string;
-  marital_status: 'single' | 'married' | 'divorced' | 'widowed';
+  denomination: TDenomination;
+  occupation: string;
+  education: string;
+  marital_status: 'single' | 'married' | 'divorced' | 'separated' | 'widowed';
   hobby?: string;
+  children? : string;
   role : 'admin' | 'user';
   subscriptionPlan: 'trail' | 'vip' | 'standard' | 'null';
+  saveItems: Types.ObjectId[]
   isEngaged: boolean;
   isRegister: boolean;
   isDeleted: boolean;

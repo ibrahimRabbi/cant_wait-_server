@@ -19,9 +19,9 @@ export const createEventController: RequestHandler = catchAsync(async (req, res,
 
     const checkEvent = await EventModel.findOne({
         $and: [
-            { name: req.body.name },
             { date: req.body.date },
-            { start_time: req.body.start_time }
+            { start_time: req.body.start_time },
+            {memberType: req.body.memberType}
         ]
     })
 
@@ -46,7 +46,6 @@ export const getEventController: RequestHandler = catchAsync(async (req, res, ne
 
     let productAdded;
     if (req.query.upcoming) {
-        console.log('hello')
         productAdded = await EventModel.find({ isDeleted: { $ne: true } }).sort('-createdAt').limit(4)
     } else {
         productAdded = await EventModel.find({ isDeleted: { $ne: true } })
@@ -60,7 +59,7 @@ export const getEventController: RequestHandler = catchAsync(async (req, res, ne
     res.status(status.OK).json({
         sucess: true,
         status: status.OK,
-        message: "Product added successfully",
+        message: "event retrive successfully",
         data: productAdded
     })
 })

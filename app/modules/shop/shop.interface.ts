@@ -2,7 +2,7 @@ import { Types } from "mongoose"
 
 export type Trating = {
     rating : number,
-    comment : string,
+    message : string,
     userId : Types.ObjectId
 }
 

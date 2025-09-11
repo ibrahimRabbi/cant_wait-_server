@@ -10,6 +10,8 @@ export const hobby = [
   "camping",
   "candle making",
   "chess",
+  "coding",
+  "programming",
   "collecting",
   "cooking",
   "cycling",

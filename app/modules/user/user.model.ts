@@ -3,16 +3,16 @@ import { Tuser } from "./user.interface";
 import { hobby } from "../../lib/hobbyArray";
 
 const denomination = [
-    "christian: catholic",
-    "christian: protestant",
-    "christian: orthodox",
-    "muslim: sunni",
-    "muslim: shia",
+    "christian-catholic",
+    "christian-protestant",
+    "christian-orthodox",
+    "muslim-sunni",
+    "muslim-shia",
     "jewish",
     "hindu",
     "buddhist",
     "aethist",
-    "other",
+    "others",
 ]
 
 const ethnicity = [
@@ -23,7 +23,7 @@ const ethnicity = [
     "middle eastern",
     "mixed race",
     "native american",
-    "other",
+    "others",
 ];
 
 const userSchema = new Schema<Tuser>({
@@ -55,18 +55,21 @@ const userSchema = new Schema<Tuser>({
 
     profile: {
         type: String,
-        default: null,
+        default: "https://res.cloudinary.com/dymnrefpr/image/upload/v1757575861/jfet2d07naniacnzwwjn.jpg",
         trim: true
     },
     cover: {
         type: String,
-        default: null,
+        default: 'https://res.cloudinary.com/dymnrefpr/image/upload/v1757575924/n8dsf0cmvhzhkjr5dklk.jpg',
         trim: true
     },
     detailsImage: {
         type: [String],
         default: []
     },
+    document: {type:String,required:true, trim:true},
+    document1: {type:String,},
+    document2: {type:String,},
     gender: {
         type: String,
         required: [true, 'Gender is required'],
@@ -94,6 +97,7 @@ const userSchema = new Schema<Tuser>({
         type: String,
         required: [true, 'Country is required'],
         trim: true,
+        lowercase:true,
         maxlength: [50, 'Country name cannot exceed 50 characters']
     },
 
@@ -101,12 +105,14 @@ const userSchema = new Schema<Tuser>({
         type: String,
         required: [true, 'State is required'],
         trim: true,
+        lowercase:true,
         maxlength: [50, 'State name cannot exceed 50 characters']
     },
     city: {
         type: String,
         required: [true, 'City is required'],
         trim: true,
+        lowercase:true,
         maxlength: [50, 'City name cannot exceed 50 characters']
     },
     bio: {
@@ -117,11 +123,13 @@ const userSchema = new Schema<Tuser>({
     occupation: {
         type: String,
         trim: true,
+        lowercase:true,
         maxlength: [100, 'Occupation cannot exceed 100 characters']
     },
     education: {
         type: String,
         trim: true,
+        lowercase:true,
         maxlength: [200, 'Education cannot exceed 200 characters']
     },
     marital_status: {
@@ -135,16 +143,18 @@ const userSchema = new Schema<Tuser>({
     hobby: {
         type: String,
         required: [true, 'hobby is required'],
+        lowercase:true,
+        trim:true,
         enum: {
             values: hobby,
             message: 'Invalid hobby'
         }
     },
+    children : {type:String, trim:true, default:''},
     role: {
         type: String,
         required: [true, 'user role is required'],
         enum: { values: ['admin', 'user'], message: "invalid user role" },
-        select: false
     },
     subscriptionPlan: {
         type: String,
@@ -154,9 +164,15 @@ const userSchema = new Schema<Tuser>({
             message: "{VALUE} is invalid subscription plan"
         }
     },
-    denimanation: {
+    saveItems:{
+        type : [Schema.Types.ObjectId],
+        ref: 'products',
+        default: []
+    },
+    denomination: {
         type: String,
         required: [true, 'Denomination is required'],
+        lowercase: true,
         enum: { values: denomination, message: '{VALUE} is not valid denomination' }
     },
     ethnicity: {
