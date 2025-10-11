@@ -10,11 +10,13 @@ import { bookEventRoute } from "../modules/bookEvent/bookEvent.route";
 import { conversationRoute } from "../modules/conversation/conversation.route";
 import { imageReportRoute } from "../modules/imageReport/imageReport.route";
 import { notificatonRoute } from "../modules/notification/notification.route";
+import { otpRoute } from "../modules/otp/otp.route";
 
 export const router = Router()
 
 router.use('/user', userRouter)
 router.use('/auth', authRoute)
+router.use('/otp', otpRoute)
 router.use('/shop', shopRoute)
 router.use('/event', eventRoute)
 router.use('/subscription', subscriptionRoute)

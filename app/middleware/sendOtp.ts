@@ -41,7 +41,7 @@ export const sendOtp: RequestHandler = async (req, res, next) => {
                 address: envData.email as string
             },
             to: req.body.email as string,
-            subject: 'Rumble email verification code--Sign Up',
+            subject: 'Rumblle email verification code--Sign Up',
             text: '',
             html: templeteString(req.body.email, OTP.toString())
         })

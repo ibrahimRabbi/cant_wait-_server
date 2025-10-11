@@ -32,25 +32,25 @@ export const adminSignInController: RequestHandler = catchAsync(async (req, res,
 
 })
 
-export const forgetPasswordController: RequestHandler = catchAsync(async (req, res, next) => {
+// export const forgetPasswordController: RequestHandler = catchAsync(async (req, res, next) => {
 
-    res.status(status.OK).json({
-        success: true,
-        code: status.OK,
-        message: "we sent email verification code to your email",
-        data: {
-            email: req.body.email,
-            otp: req.otpCode
-        }
-    });
+//     res.status(status.OK).json({
+//         success: true,
+//         status: status.OK,
+//         message: "we have sent email verification code to your email",
+//         data: {
+//             email: req.body.email,
+//             otp: req.otpCode
+//         }
+//     });
 
-})
+// })
 
 export const updatePasswordController :RequestHandler = catchAsync(async (req,res,next) => {
 
     const updating = await userModel.findOneAndUpdate(
         { email: req.query.email },
-        { password: req.body.newPassword },
+        { password: req.body.password },
        { new: true, runValidators: true, context: 'query' });
     if (!updating) {
         return next(new Error("User not found or unable to update password"));

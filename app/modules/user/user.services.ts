@@ -42,7 +42,7 @@ export const createUserService = async (req: Request) => {
         gender: newUser.gender
     }
 
-    const accessToken = jwt.sign(credentials, envData.secretKey as string, { expiresIn: '7d' })
+    const accessToken = jwt.sign(credentials, envData.secretKey as string, { expiresIn: '12d' })
     return accessToken
 
 }
