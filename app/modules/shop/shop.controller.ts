@@ -8,7 +8,7 @@ import { ProductModel } from "./shop.model";
 
 
 export const addProductController: RequestHandler = catchAsync(async (req, res) => {
-
+ 
     if (req.user?.role !== 'admin') {
         res.status(status.UNAUTHORIZED).json({
             sucess: false,
@@ -17,7 +17,7 @@ export const addProductController: RequestHandler = catchAsync(async (req, res) 
         })
     }
 
-    const productAdded = await addProductServices(req.body)
+    const productAdded = await addProductServices(req)
     res.status(status.OK).json({
         sucess: true,
         status: status.OK,
@@ -28,7 +28,7 @@ export const addProductController: RequestHandler = catchAsync(async (req, res) 
 })
 
 export const updateProductController: RequestHandler = catchAsync(async (req, res) => {
-
+ 
     if (req.user?.role !== 'admin') {
         res.status(status.UNAUTHORIZED).json({
             sucess: false,
@@ -37,7 +37,7 @@ export const updateProductController: RequestHandler = catchAsync(async (req, re
         })
     }
 
-    const productAdded = await updateProductServices(req.params?.id, req.body)
+    const productAdded = await updateProductServices(req.params?.id, req)
     res.status(status.OK).json({
         sucess: true,
         status: status.OK,

@@ -1,16 +1,36 @@
 import { Request } from "express"
 import { Tproduct } from "./shop.interface"
 import { ProductModel } from "./shop.model"
+import { imageHostToCloudinary } from "../../helper/imageHostToCloudinary"
 
 
-export const addProductServices = async (product: Tproduct) => {
-
-    const checkProduct = await ProductModel.findOne({ $and: [{ title: product.title }, { category: product.category }, { color: { $in: product.color } }, { size: { $in: product.size } }, { price: product.price }] })
+export const addProductServices = async (req:Request) => {
+ 
+    const checkProduct = await ProductModel.findOne({
+        $and: [
+            { title: req?.body.title },
+            { colors: { $in: req?.body.colors } },
+            { sizes: { $in: req?.body.sizes } },
+            { description: req?.body?.description },
+            { price: req?.body.price }
+        ]
+    })
     if (checkProduct) {
         throw new Error("this Product already exists")
     }
 
-    const productAdded = await ProductModel.create(product)
+    const imageName = `cant_wait_${Math.random().toString().split('.')[1]}`
+    const imagePath = req.file?.path || 'No document1 uploaded';
+
+
+    const image = await imageHostToCloudinary(imageName, imagePath as string)
+
+    const data = {
+        ...req.body,
+        image: (image as unknown as {secure_url: string})?.secure_url || 'null',
+    };
+
+    const productAdded = await ProductModel.create(data)
     if (!productAdded) {
         throw new Error("Failed to add product")
     }
@@ -18,24 +38,36 @@ export const addProductServices = async (product: Tproduct) => {
     return productAdded
 }
 
-export const updateProductServices = async (id: string, product: Partial<Tproduct>) => {
+export const updateProductServices = async (id: string, req:Request) => {
+ const data = {
+        ...req.body,
+    };
+    
+    if (req.file) {
+        const imageName = `cant_wait_${Math.random().toString().split('.')[1]}`
+        const imagePath = req.file?.path || 'No event image uploaded';
 
-    const updatedProduct = await ProductModel.findByIdAndUpdate(id, product, { new: true, runValidators: true, context: 'query' })
+
+        const image = await imageHostToCloudinary(imageName, imagePath as string)
+
+        data.image = (image as unknown as { secure_url: string })?.secure_url || 'null'
+    }
+    const updatedProduct = await ProductModel.findByIdAndUpdate(id, data, { new: true, runValidators: true, context: 'query' })
     if (!updatedProduct) {
         throw new Error("Failed to update product")
     }
     return updatedProduct
 }
+
 
 export const deleteProductServices = async (id: string) => {
 
     const updatedProduct = await ProductModel.findByIdAndUpdate(id, { isDeleted: true }, { new: true })
     if (!updatedProduct) {
-        throw new Error("Failed to update product")
+        throw new Error("Failed to Delete product")
     }
     return updatedProduct
 }
-
 export const getAllProductServices = async (req: Request) => {
 
     const pageNumber: number = parseInt(req?.query?.page as string)

@@ -24,10 +24,10 @@ export type TDenomination =
 
 
 export type Tuser = {
-  _id?: string;
   name: string;
   email: string;
   password: string;
+  phoneNumber: string;
   profile?: string;
   cover?: string;
   detailsImage?: string[];
@@ -36,7 +36,6 @@ export type Tuser = {
   document2?: string;
   gender: 'male' | 'female';
   DOB: Date;
-  age: number;
   country: string;
   state: string;
   city: string;
@@ -46,14 +45,20 @@ export type Tuser = {
   occupation: string;
   education: string;
   marital_status: 'single' | 'married' | 'divorced' | 'separated' | 'widowed';
-  hobby?: string;
+  hobby?: [string];
   children? : string;
   role : 'admin' | 'user';
-  subscriptionPlan: 'trail' | 'vip' | 'standard' | 'null';
+  subscriptionPlan: 'trail' | 'premium' | 'standard' | 'null' | 'vip';
   saveItems: Types.ObjectId[]
   isEngaged: boolean;
-  isRegister: boolean;
+  status: 'pending' | 'approved' | 'banned';
+  banExpiresAt: Date | null;
+  subscriptionExpiresAt:Date | null;
+  subscriptionDuration : number 
+  subscriptionStatus: "active"| "expired";
   isDeleted: boolean;
   isEmailVerified?: boolean;
   isActive?: boolean;
+  blockedUsers: Types.ObjectId[];
+  blockedMe : Types.ObjectId[];
 };

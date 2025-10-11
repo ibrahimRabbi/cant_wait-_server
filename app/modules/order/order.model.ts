@@ -30,7 +30,7 @@ const OrderSchema = new Schema<Torder>(
       ref: "users",
       required: true,
     },
-    orderStatus : {type:String, enum:['pending','delivered'], default:'pending'},
+    orderStatus : {type:String, enum:['pending','delivered','on-hold','confirmed','cancelled'], default:'pending'},
     message: {
       type: String,
       required: [true, 'please input a short message'],

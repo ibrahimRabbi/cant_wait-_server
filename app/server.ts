@@ -5,26 +5,33 @@ import { createServer } from "http"
 import { Server } from "socket.io"
 import { socketCors } from "./lib/socketCors"
 import { envData } from "./config/envData"
-import { conversationController } from "./modules/conversation/conversation.controller"
+import { conversationController, getAllConversationController } from "./modules/conversation/conversation.controller"
 import { router } from "./routes"
 import { globalErrorHandler } from "./middleware/globalErrorHandler"
 import { notFound } from "./middleware/notFound"
- 
+import './helper/unbannedUser'
+import { startUnbanJob } from "./helper/unbannedUser"
+import { SubscriptionWillBeExpired } from "./helper/subscriptionExpire"
+import { sendNotificationController } from "./modules/notification/notification.controller"
+import { userModel } from "./modules/user/user.model"
+
 
 
 const app = express()
 const httpServer = createServer(app)
-const io = new Server(httpServer, socketCors);
+export const io = new Server(httpServer, socketCors);
 
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
 }))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use('/api/v1', router)
+
 
 
 
@@ -35,16 +42,50 @@ async function main() {
     app.get("/", (req, res) => {
         res.send("hello world your are conneted with server")
     })
+    startUnbanJob()
+    SubscriptionWillBeExpired()
 
-    io.on("connection", (socket) => {
-        console.log("A user connected with socket id:", socket.id);
+    io.on("connection", async (socket) => {
 
-       conversationController(io,socket)
+        try {
+            const userId = socket.handshake.query.userId as string;
+            socket.join(userId)
+            
+            console.log("A user connected with userId:", userId, "socketId:", socket.id);
+          
 
-        socket.on("disconnect", () => {
-            console.log("A user disconnected");
-        });
+            if (userId) {
+                await userModel.findByIdAndUpdate(
+                    userId,
+                    { isActive: true },
+                    { runValidators: true, context: "query" }
+                );
+            }
+
+         
+            conversationController(io, socket);
+            sendNotificationController(io, socket);
+ 
+            socket.on("disconnect", async () => {
+                try {
+                    if (userId) {
+                        await userModel.findByIdAndUpdate(
+                            userId,
+                            { isActive: false },
+                            { runValidators: true, context: "query" }
+                        );
+                    }
+                    console.log("A user disconnected:", userId);
+                } catch (err) {
+                    console.error("Error on disconnect update:", err);
+                }
+            });
+
+        } catch (err) {
+            console.error("Error on connection:", err);
+        }
     });
+
 
 }
 

@@ -10,6 +10,6 @@ export type Tmessage = {
 
 export type Tconversations = {
     members: Types.ObjectId[];
-    messages: [Tmessage];
+    messages: [Tmessage] | [];
     isDeleted?: boolean;
 }

@@ -26,6 +26,8 @@ const ethnicity = [
     "others",
 ];
 
+const blockingSchema = { type: Schema.Types.ObjectId, ref: "users" }
+
 const userSchema = new Schema<Tuser>({
     name: {
         type: String,
@@ -52,24 +54,29 @@ const userSchema = new Schema<Tuser>({
         ],
         select: false
     },
-
+    phoneNumber: {
+        type: String,
+        required: [true, 'Phone number is required'],
+        trim: true,
+        match: [/^\+?[1-9]\d{1,14}$/, 'Please enter a valid phone number']
+    },
     profile: {
         type: String,
-        default: "https://res.cloudinary.com/dymnrefpr/image/upload/v1757575861/jfet2d07naniacnzwwjn.jpg",
+        default: "https://res.cloudinary.com/dymnrefpr/image/upload/v1757756925/axprgycysnygta9umc1z.jpg",
         trim: true
     },
     cover: {
         type: String,
-        default: 'https://res.cloudinary.com/dymnrefpr/image/upload/v1757575924/n8dsf0cmvhzhkjr5dklk.jpg',
+        default: 'https://res.cloudinary.com/dymnrefpr/image/upload/v1757756927/uzhogzjebt1sa1nmi43y.jpg',
         trim: true
     },
     detailsImage: {
         type: [String],
         default: []
     },
-    document: {type:String,required:true, trim:true},
-    document1: {type:String,},
-    document2: {type:String,},
+    document: { type: String, required: true, trim: true },
+    document1: { type: String, },
+    document2: { type: String, },
     gender: {
         type: String,
         required: [true, 'Gender is required'],
@@ -88,16 +95,11 @@ const userSchema = new Schema<Tuser>({
             message: 'Date of birth cannot be in the future'
         }
     },
-    age: {
-        type: Number,
-        min: [13, 'Age must be at least 13'],
-        max: [70, 'Age cannot exceed 70']
-    },
     country: {
         type: String,
         required: [true, 'Country is required'],
         trim: true,
-        lowercase:true,
+        lowercase: true,
         maxlength: [50, 'Country name cannot exceed 50 characters']
     },
 
@@ -105,31 +107,31 @@ const userSchema = new Schema<Tuser>({
         type: String,
         required: [true, 'State is required'],
         trim: true,
-        lowercase:true,
+        lowercase: true,
         maxlength: [50, 'State name cannot exceed 50 characters']
     },
     city: {
         type: String,
         required: [true, 'City is required'],
         trim: true,
-        lowercase:true,
+        lowercase: true,
         maxlength: [50, 'City name cannot exceed 50 characters']
     },
     bio: {
         type: String,
-        required: [true, 'Bio is required'],
-        maxlength: [300, 'Bio cannot exceed 300 characters']
+        maxlength: [300, 'Bio cannot exceed 300 characters'],
+        default: ''
     },
     occupation: {
         type: String,
         trim: true,
-        lowercase:true,
+        lowercase: true,
         maxlength: [100, 'Occupation cannot exceed 100 characters']
     },
     education: {
         type: String,
         trim: true,
-        lowercase:true,
+        lowercase: true,
         maxlength: [200, 'Education cannot exceed 200 characters']
     },
     marital_status: {
@@ -141,31 +143,20 @@ const userSchema = new Schema<Tuser>({
         }
     },
     hobby: {
-        type: String,
+        type: [String],
         required: [true, 'hobby is required'],
-        lowercase:true,
-        trim:true,
-        enum: {
-            values: hobby,
-            message: 'Invalid hobby'
-        }
+        lowercase: true,
+        trim: true,
+        enum: { values: hobby, message: '{VALUE} is Invalid hobby' }
     },
-    children : {type:String, trim:true, default:''},
+    children: { type: String, trim: true, default: '' },
     role: {
         type: String,
         required: [true, 'user role is required'],
         enum: { values: ['admin', 'user'], message: "invalid user role" },
     },
-    subscriptionPlan: {
-        type: String,
-        required: [true, 'subscription plan is required'],
-        enum: {
-            values: ['null', 'trail', 'vip', 'standard'],
-            message: "{VALUE} is invalid subscription plan"
-        }
-    },
-    saveItems:{
-        type : [Schema.Types.ObjectId],
+    saveItems: {
+        type: [Schema.Types.ObjectId],
         ref: 'products',
         default: []
     },
@@ -188,11 +179,24 @@ const userSchema = new Schema<Tuser>({
         default: false,
         select: false
     },
-    isRegister: {
-        type: Boolean,
-        default: false,
-        select: false
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'banned'],
+        default: 'pending'
     },
+    subscriptionPlan: {
+        type: String,
+        required: [true, 'subscription plan is required'],
+        enum: {
+            values: ['null', 'trial', 'premium', 'standard', 'vip'],
+            message: "{VALUE} is invalid subscription plan"
+        },
+        default: 'null'
+    },
+    subscriptionDuration:{type:Number, default:0},
+    banExpiresAt: { type: Date, default: null },
+    subscriptionExpiresAt: { type: Date, default: null },
+    subscriptionStatus: { type: String, enum: ["active", "expired"], default: "expired" },
 
     isDeleted: {
         type: Boolean,
@@ -203,7 +207,9 @@ const userSchema = new Schema<Tuser>({
     isActive: {
         type: Boolean,
         default: true
-    }
+    },
+    blockedUsers: {type:[blockingSchema], default:[]},
+    blockedMe: {type:[blockingSchema], default:[]},
 
 }, { timestamps: true, strict: "throw" });
 

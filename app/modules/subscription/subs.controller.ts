@@ -24,7 +24,6 @@ export const createSubcriptionController: RequestHandler = async (req, res, next
 
 }
 
-
 export const getAllSubscriptionController: RequestHandler = catchAsync(async (req, res, next) => {
     const allSub = await SubscriptionModel.find({ isDeleted: { $ne: true } })
     if (!allSub) {
@@ -52,7 +51,6 @@ export const getSingleSubscriptionController: RequestHandler = async (req, res, 
         data: singleSub
     })
 }
-
 
 export const deleteSubscriptionController: RequestHandler = async (req, res, next) => {
     if (req.user?.role !== 'admin') {
@@ -95,3 +93,102 @@ export const updateSubscriptionController: RequestHandler = async (req, res, nex
         data: updatedSub
     })
 }
+
+// {"pricingPlans": [
+//    ,
+//     {
+//       "id": "standard",
+//       "name": "STANDARD",
+//       "price": 2999,
+//       "currency": "$",
+//       "billing": "User / Month",
+//       "featured": false,
+//       "features": [
+//         {
+//           "id": "basic_features",
+//           "text": "All basic features",
+//           "included": true
+//         },
+//         {
+//           "id": "storage_500gb_1",
+//           "text": "500 GB storage",
+//           "included": true
+//         },
+//         {
+//           "id": "email_support",
+//           "text": "Email support",
+//           "included": true
+//         },
+//         {
+//           "id": "basic_analytics_1",
+//           "text": "Basic analytics",
+//           "included": true
+//         },
+//         {
+//           "id": "multiple_devices",
+//           "text": "Access on multiple devices",
+//           "included": true
+//         },
+//         {
+//           "id": "storage_500gb_2",
+//           "text": "500 GB storage",
+//           "included": true
+//         },
+//         {
+//           "id": "storage_500gb_3",
+//           "text": "500 GB storage",
+//           "included": true
+//         },
+//         {
+//           "id": "basic_analytics_2",
+//           "text": "Basic analytics",
+//           "included": true
+//         },
+//         {
+//           "id": "storage_500gb_4",
+//           "text": "500 GB storage",
+//           "included": true
+//         }
+//       ],
+//       "buttonText": "BOOK NOW",
+//       "buttonAction": "book_standard"
+//     },
+//     {
+//       "id": "trial",
+//       "name": "TRIAL",
+//       "price": 0,
+//       "currency": "$",
+//       "billing": "User / Month",
+//       "featured": false,
+//       "features": [
+//         {
+//           "id": "basic_features_access",
+//           "text": "Access to basic features",
+//           "included": true
+//         },
+//         {
+//           "id": "storage_5gb",
+//           "text": "5 GB storage",
+//           "included": true
+//         },
+//         {
+//           "id": "community_support",
+//           "text": "Community support",
+//           "included": true
+//         },
+//         {
+//           "id": "single_device",
+//           "text": "Single device access",
+//           "included": true
+//         },
+//         {
+//           "id": "limited_analytics",
+//           "text": "Limited analytics",
+//           "included": true
+//         }
+//       ],
+//       "buttonText": "BOOK NOW",
+//       "buttonAction": "book_trial"
+//     }
+//   ]
+// }

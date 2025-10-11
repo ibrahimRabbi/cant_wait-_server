@@ -25,3 +25,19 @@ export const bookEventController: RequestHandler = catchAsync(async (req, res, n
         data: booking
     });
 })
+
+export const getBookEventController: RequestHandler = catchAsync(async (req, res, next) => {
+
+    const bookevents = await bookEventModel.find({isDeleted: {$ne:true}}).populate('eventId').populate('userId')
+
+    if (!bookevents) {
+        throw new Error('failed to fetch booked event')
+    }
+   
+    res.status(status.OK).json({
+        success: true,
+        status: status.OK,
+        message: "book event retrieved successfully",
+        data: bookevents
+    });
+})

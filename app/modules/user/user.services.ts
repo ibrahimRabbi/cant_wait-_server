@@ -8,54 +8,50 @@ import { Request } from "express";
 
 export const createUserService = async (req: Request) => {
 
+    const checkExistancy = await userModel.findOne({ email: req.body?.email })
+    if (checkExistancy) {
+        throw new Error('this user Already Exist')
+    }
+
     const imageName = `${req.body.name}_${Math.random().toString().split('.')[1]}`
+    const fileNames = req?.files ? Object.keys(req.files) : [];
 
+    await Promise.all(fileNames.map(async (name: string) => {
+        const imagePath = (req.files as { [key: string]: { path: string }[] })?.[name]?.[0]?.path;
 
+        if (imagePath) {
+            const { secure_url: imageUrl } = await imageHostToCloudinary(imageName, imagePath) as { secure_url: string };
+            req.body[name] = imageUrl;
+        } else {
+            throw new Error('no image or document Attach');
+        }
+    }));
 
-   const profileImagePath = req.files?.profile?.[0]?.path || 'No profile image uploaded';
-const documentImagePath = req.files?.document?.[0]?.path || 'No document uploaded';
-const document1ImagePath = req.files?.document1?.[0]?.path || 'No document1 uploaded';
-const document2ImagePath = req.files?.document2?.[0]?.path || 'No document2 uploaded';
+    req.body.role = 'user';
+    req.body.subscriptionPlan = 'null';
 
-console.log('Profile Image Path:', profileImagePath);
-console.log('Document Path:', documentImagePath);
-console.log('Document1 Path:', document1ImagePath);
-console.log('Document2 Path:', document2ImagePath);
+    const newUser = await userModel.create(req.body);
+    if (!newUser) {
+        throw new Error('Failed to create user');
+    }
 
+    const credentials = {
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        gender: newUser.gender
+    }
 
-    // const { secure_url: documentImage } = await imageHostToCloudinary(imageName, documentImagePath as string)
-    // const { secure_url: profileImage } = await imageHostToCloudinary(imageName, profileImagePath as string)
-    const { secure_url: profileImage } = await imageHostToCloudinary(imageName, document1ImagePath as string)
-    // req.body.document = documentImage
-    // req.body.profile = profileImage
-    // req.body.role = 'user';
-    // req.body.subscriptionPlan = 'null';
-
-    // console.log(req.body)
-    console.log(profileImage)
-
-
-    // const newUser = await userModel.create(req.body);
-    // if (!newUser) {
-    //     throw new Error('Failed to create user');
-    // }
-
-    // const credentials = {
-    //     name: newUser.name,
-    //     email: newUser.email,
-    //     role: newUser.role,
-    // }
-
-    // const accessToken = jwt.sign(credentials, envData.secretKey as string, { expiresIn: '7d' })
-    // return accessToken
+    const accessToken = jwt.sign(credentials, envData.secretKey as string, { expiresIn: '7d' })
+    return accessToken
 
 }
-
 
 
 export const createAdminService = async (userData: any) => {
 
     userData.role = 'admin';
+    userData.isApprove = 'approved';
     userData.subscriptionPlan = 'null';
 
     const newUser = await userModel.create(userData);
@@ -77,8 +73,7 @@ export const createAdminService = async (userData: any) => {
 
 
 export const updateUserService = async (id: string, userData: any) => {
-    console.log(userData)
-    console.log(id)
+
     const updatedUser = await userModel.findByIdAndUpdate(
         id,
         { $set: userData },

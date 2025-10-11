@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { catchAsync } from "../../helper/catchAsync";
-import { signInService } from "./signIn.service";
+import { adminSignInService, signInService } from "./signIn.service";
 import status from "http-status";
 import { userModel } from "../user/user.model";
 
@@ -12,13 +12,25 @@ export const signInController: RequestHandler = catchAsync(async (req, res, next
     
     res.status(status.OK).json({
         success: true,
-        code: status.OK,
+        status: status.OK,
         message: "sign in successfully",
         token: signin
     });
 
 })
 
+export const adminSignInController: RequestHandler = catchAsync(async (req, res, next) => {
+
+    const signin = await adminSignInService(req.body);
+    
+    res.status(status.OK).json({
+        success: true,
+        status: status.OK,
+        message: "sign in successfully",
+        token: signin
+    });
+
+})
 
 export const forgetPasswordController: RequestHandler = catchAsync(async (req, res, next) => {
 
@@ -34,7 +46,6 @@ export const forgetPasswordController: RequestHandler = catchAsync(async (req, r
 
 })
 
-
 export const updatePasswordController :RequestHandler = catchAsync(async (req,res,next) => {
 
     const updating = await userModel.findOneAndUpdate(
@@ -46,7 +57,7 @@ export const updatePasswordController :RequestHandler = catchAsync(async (req,re
     }
     res.status(status.OK).json({
         success: true,
-        code: status.OK,
+        status: status.OK,
         message: "password updated successfully",
         otp: updating
     });

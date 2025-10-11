@@ -11,11 +11,10 @@ export type Tproduct = {
     price:number,
     description:string,
     image:string,
-    size:string[],
-    color:string[],
-    category:string,
+    sizes:string[],
+    colors:string[],
     gender: 'male' | 'female' | 'unisex',
-    inStock:number,
+    // inStock:number,
     tags?:string[];
     rating?: Trating[];
     isDeleted:boolean

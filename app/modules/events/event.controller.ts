@@ -1,8 +1,11 @@
+import { TNotification } from './../notification/notification.intrface';
 import { RequestHandler } from "express";
 import { catchAsync } from "../../helper/catchAsync";
 import status from "http-status";
 import { createEventServices, deleteEventServices, updateEventServices } from "./event.services";
 import { EventModel } from "./event.model";
+import { io } from "../../server";
+import { NotificationModel } from "../notification/notification.model";
 
 
 
@@ -21,7 +24,7 @@ export const createEventController: RequestHandler = catchAsync(async (req, res,
         $and: [
             { date: req.body.date },
             { start_time: req.body.start_time },
-            {memberType: req.body.memberType}
+            { memberType: req.body.memberType }
         ]
     })
 
@@ -29,10 +32,11 @@ export const createEventController: RequestHandler = catchAsync(async (req, res,
         throw new Error("this event already exists")
     }
 
-    const productAdded = await createEventServices(req.body)
+    const productAdded = await createEventServices(req)
     if (!productAdded) {
         throw new Error("Failed to create event")
     }
+    
 
     res.status(status.OK).json({
         sucess: true,
@@ -88,7 +92,7 @@ export const updateEventController: RequestHandler = catchAsync(async (req, res,
     }
 
 
-    const productAdded = await updateEventServices(req.params.id, req.body)
+    const productAdded = await updateEventServices(req.params.id, req)
     res.status(status.OK).json({
         sucess: true,
         status: status.OK,
@@ -107,7 +111,6 @@ export const deleteEventController: RequestHandler = catchAsync(async (req, res,
             message: "You are not authorized to delete event"
         })
     }
-
 
     const productAdded = await deleteEventServices(req.params.id)
     res.status(status.OK).json({

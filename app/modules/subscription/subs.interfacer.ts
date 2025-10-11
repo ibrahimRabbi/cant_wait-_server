@@ -1,7 +1,7 @@
 export type Tsubscription = {
     planType: 'trial' | 'premium' | 'standard';
     price: number;
-    duration: Date;
-    features: string[];
+    durationType: 'monthly' | 'weekly' | 'yearly';
+    benefits: string[];
     isDeleted: boolean
 }

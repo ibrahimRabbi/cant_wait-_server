@@ -8,6 +8,6 @@ export type Torder = {
     reciverId: Types.ObjectId;
     senderId: Types.ObjectId
     message: string;
-    orderStatus: 'pending' | 'delivered'
+    orderStatus: 'pending' | 'delivered' | 'on-hold' | 'confirmed' | 'cancelled'
     isDeleted: boolean
 }

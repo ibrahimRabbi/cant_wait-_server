@@ -16,11 +16,12 @@ const subscriptionSchema = new Schema<Tsubscription>(
       required: [true, "Price is required"],
       min: [0, "Price cannot be negative"],
     },
-    duration: {
-      type: Date,
+    durationType: {
+      type: String,
+      enum : ['monthly' , 'weekly' , 'yearly'],
       required: [true, "Duration is required"],
     },
-    features: {
+    benefits: {
       type: [String],
       required: [true, "At least one feature must be provided"],
       validate: {

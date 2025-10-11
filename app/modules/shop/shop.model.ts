@@ -28,7 +28,7 @@ const productSchema = new Schema<Tproduct>(
     title: { 
       type: String, 
       required: [true, "Product title is required"] ,
-      maxlength:[22, 'title maxium 22 character will be applicable']
+      maxlength:[30, 'title maxium 22 character will be applicable']
     },
     price: { 
       type: Number, 
@@ -42,18 +42,18 @@ const productSchema = new Schema<Tproduct>(
       type: String, 
       required: [true, "Product image is required"] 
     },
-    size: { 
+    sizes: { 
       type: [String], 
       required: [true, "At least one size is required"] 
     },
-    color: { 
+    colors: { 
       type: [String], 
       required: [true, "At least one color is required"] 
     },
-    category: { 
-      type: String, 
-      required: [true, "Product category is required"] 
-    },
+    // category: { 
+    //   type: String, 
+    //   required: [true, "Product category is required"] 
+    // },
     gender: {
       type: String,
       enum: {
@@ -62,11 +62,11 @@ const productSchema = new Schema<Tproduct>(
       },
       required: [true, "Gender is required"],
     },
-    inStock: { 
-      type: Number, 
-      required: [true, "Stock quantity is required"], 
-      default: 0 
-    },
+    // inStock: { 
+    //   type: Number, 
+    //   required: [true, "Stock quantity is required"], 
+    //   default: 0 
+    // },
     tags: { 
       type: [String], 
       default: [] 
@@ -79,7 +79,7 @@ const productSchema = new Schema<Tproduct>(
   },
   {
     timestamps: true,
-    strict: "throw", 
+     strict: "throw", 
   }
 );
 

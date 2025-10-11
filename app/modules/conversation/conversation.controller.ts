@@ -1,22 +1,23 @@
 import { Server, Socket } from "socket.io";
 import { conversationModel } from "./conversation.model";
 import { Tconversations, Tmessage } from "./conversation.interface";
+import { NextFunction, Request, Response } from "express";
+import status from "http-status";
+import { catchAsync } from "../../helper/catchAsync";
+import { Tuser } from "../user/user.interface";
 
 
 export const conversationController = (io: Server, socket: Socket) => {
 
     socket.on('checkingAndjoinConversationRoom', async (payload) => {
-
+ 
         const messageData: Tmessage = { sender: payload.senderId, text: payload.text }
         const data: Tconversations = {
             members: [payload.senderId, payload.reciverId],
-            messages: [messageData]
-
+            messages: payload.text ? [messageData] : []
         }
-
-        const checkExistancy = await conversationModel.findOne({
-            members: { $all: [payload.senderId, payload.reciverId] }
-        })
+        const members = [payload.senderId, payload.reciverId].sort();
+        const checkExistancy = await conversationModel.findOne({ members: { $all: members } })
 
         if (!checkExistancy) {
             const createCoversation = await conversationModel.create(data)
@@ -49,15 +50,59 @@ export const conversationController = (io: Server, socket: Socket) => {
             { $push: { messages: messageData } },
             { new: true }
         )
-        console.log("updated", updated);
 
         if (updated) {
-            io.to(payload?.conversationId).emit("receiveMessage",messageData);
+            io.to(payload?.conversationId).emit("receiveMessage", messageData);
         }
 
 
 
     })
 
-
 }
+
+
+export const getAllConversationController = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const checkExistancy = await conversationModel.find({ members: req.query.userId }).populate('members')
+
+    if (!checkExistancy) {
+        throw new Error("conversation not Found")
+    }
+    res.status(status.OK).json({
+        sucess: true,
+        status: status.OK,
+        message: "Product added successfully",
+        data: checkExistancy
+    })
+})
+
+
+export const getAllActiveUserController = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+   
+    const activeUser: Tuser[] = []
+    const checkExistancy = await conversationModel.find({ members: req.user._id }).populate('members').select('members')
+    checkExistancy.forEach((doc: any) => {
+        const opponentUser = doc.members.filter((member: any) => member?._id.toString() !== req.user._id.toString()
+        );
+        activeUser.push(...opponentUser)
+
+    });
+    const findActiceUsers = activeUser.filter(v=>v?.isActive)
+    
+
+
+
+
+    if (!checkExistancy) {
+        throw new Error("conversation not Found")
+    }
+    res.status(status.OK).json({
+        sucess: true,
+        status: status.OK,
+        message: "active user retrive successfully",
+        data: findActiceUsers
+    })
+})
+

@@ -9,7 +9,7 @@ const messageSchema = new Schema<Tmessage>({
 
 
 const conversationSchema = new Schema<Tconversations>({
-    members: { type: [Schema.Types.ObjectId], required: true },
+    members: { type: [Schema.Types.ObjectId], required: true, ref:'users' },
     messages: { type: [messageSchema], required: true },
     isDeleted: { type: Boolean, default: false }
 }, { timestamps: true })

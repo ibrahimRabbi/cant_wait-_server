@@ -6,6 +6,7 @@ const eventSchema = new Schema<Tevent>(
     name: {
       type: String,
       required: [true, "Event name is required"],
+      maxlength: [30, "Event name cannot exceed 30 characters"],
       trim: true,
     },
     price: {
@@ -21,16 +22,11 @@ const eventSchema = new Schema<Tevent>(
       type: String,
       required: [true, "Event time is required"],
     },
-    end_time: {
-      type: String,
-      required: [true, "Event time is required"],
-    },
-
     memberType: {
       type: [String],
       required: [true, "member type is required"],
       enum: {
-        values: ["free-trial", "premium", "standard"],
+        values: ["trial", "premium", "standard"],
         message: "{VALUE} is not valid member type",
       },
     },
