@@ -26,3 +26,8 @@ router.use('/book', bookEventRoute)
 router.use('/conversation', conversationRoute)
 router.use('/ImageReport', imageReportRoute)
 router.use('/notification', notificatonRoute)
+
+
+router.get('/', (req, res) => {
+    res.json({ title: 'hello world welcome to dating server' })
+})
