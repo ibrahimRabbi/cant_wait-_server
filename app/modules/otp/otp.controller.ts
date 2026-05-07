@@ -56,6 +56,5 @@ export const verifyOtpController = catchAsync(async (req: Request, res: Response
     data:  ''
   });
 
-
 }
 )

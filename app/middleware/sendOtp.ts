@@ -23,32 +23,32 @@ export const sendOtp: RequestHandler = async (req, res, next) => {
         }
 
 
-        const transporter = nodeMailer.createTransport({
-            service: 'gmail',
-            port: 587,
-            secure: false,
-            auth: {
-                user: envData.email,
-                pass: envData.emailPassword
-            }
-        })
+        // const transporter = nodeMailer.createTransport({
+        //     service: 'gmail',
+        //     port: 587, 
+        //     secure: false,
+        //     auth: {
+        //         user: envData.email,
+        //         pass: envData.emailPassword
+        //     }
+        // })
 
 
 
-        const send = await transporter.sendMail({
-            from: {
-                name: 'Rumblle',
-                address: envData.email as string
-            },
-            to: req.body.email as string,
-            subject: 'Rumblle email verification code--Sign Up',
-            text: '',
-            html: templeteString(req.body.email, OTP.toString())
-        })
+        // const send = await transporter.sendMail({
+        //     from: {
+        //         name: 'Rumblle',
+        //         address: envData.email as string
+        //     },
+        //     to: req.body.email as string,
+        //     subject: 'Rumblle email verification code--Sign Up',
+        //     text: '',
+        //     html: templeteString(req.body.email, OTP.toString())
+        // })
 
-        if (!send.response) {
-            throw new Error('something went wrong')
-        }
+        // if (!send.response) {
+        //     throw new Error('something went wrong')
+        // }
 
         req.otpCode = OTP;
         next();

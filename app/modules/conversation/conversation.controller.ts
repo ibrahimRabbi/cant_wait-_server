@@ -8,58 +8,54 @@ import { Tuser } from "../user/user.interface";
 
 
 export const conversationController = (io: Server, socket: Socket) => {
+  
+  socket.on('checkingAndjoinConversationRoom', async (payload) => {
+    const messageData: Tmessage = { sender: payload.senderId, text: payload.text };
+    const data: Tconversations = {
+      members: [payload.senderId, payload.reciverId],
+      messages: payload.text ? [messageData] : []
+    };
+    const members = [payload.senderId, payload.reciverId].sort();
+    
+    // Check if the conversation already exists
+    const checkExistancy = await conversationModel.findOne({ members: { $all: members } });
 
-    socket.on('checkingAndjoinConversationRoom', async (payload) => {
- 
-        const messageData: Tmessage = { sender: payload.senderId, text: payload.text }
-        const data: Tconversations = {
-            members: [payload.senderId, payload.reciverId],
-            messages: payload.text ? [messageData] : []
-        }
-        const members = [payload.senderId, payload.reciverId].sort();
-        const checkExistancy = await conversationModel.findOne({ members: { $all: members } })
+    if (!checkExistancy) {
+      // Create a new conversation if it doesn't exist
+      const createCoversation = await conversationModel.create(data);
+      socket.join(createCoversation._id.toString());
+      socket.emit("joinedConversationRoom", createCoversation._id);
+    } else {
+      // Join the existing conversation
+      socket.join(checkExistancy._id.toString());
+      socket.emit("joinedConversationRoom", checkExistancy._id);
+    }
+  });
 
-        if (!checkExistancy) {
-            const createCoversation = await conversationModel.create(data)
-            socket.join(createCoversation._id.toString())
-            socket.emit("joinedConversationRoom", createCoversation._id)
-        } else {
-            socket.join(checkExistancy._id.toString())
-            socket.emit("joinedConversationRoom", checkExistancy._id)
-        }
-    })
+  socket.on('getMessage', async (converSId) => {
+    const findConversation = await conversationModel.findById(converSId);
 
+    if (findConversation) {
+      socket.emit("loadMessage", findConversation.messages);
+    }
+  });
 
-    socket.on('getMessage', async (converSId) => {
-        const findConversation = await conversationModel.findById(converSId)
+  socket.on('sendMessage', async (payload) => {
+    const messageData: Tmessage = { sender: payload.sender, text: payload.text };
 
-        if (findConversation) {
-            socket.emit("loadMessage", findConversation.messages);
-        }
+    // Find the conversation and add the message to the message array
+    const updated = await conversationModel.findByIdAndUpdate(
+      payload?.conversationId,
+      { $push: { messages: messageData } },
+      { new: true }
+    );
 
-    })
+    if (updated) {
+      io.to(payload?.conversationId).emit("receiveMessage", messageData);
+    }
+  });
+};
 
-
-
-    socket.on('sendMessage', async (payload) => {
-
-        const messageData: Tmessage = { sender: payload.sender, text: payload.text }
-
-        const updated = await conversationModel.findByIdAndUpdate(
-            payload?.conversationId,
-            { $push: { messages: messageData } },
-            { new: true }
-        )
-
-        if (updated) {
-            io.to(payload?.conversationId).emit("receiveMessage", messageData);
-        }
-
-
-
-    })
-
-}
 
 
 export const getAllConversationController = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
